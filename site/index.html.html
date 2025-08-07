@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UTM Builder Quero Bolsa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .input-group input:disabled, .input-group select:disabled {
+            background-color: #e2e8f0;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 lg:p-12 min-h-screen flex flex-col items-center">
+
+    <div class="max-w-4xl w-full bg-white shadow-2xl rounded-xl p-6 sm:p-8 md:p-10 lg:p-12 my-8">
+        <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-4 text-center">UTM Builder Quero Bolsa</h1>
+        
+        <p class="text-gray-600 mb-8 text-center">
+            Selecione o canal de marketing para gerar links UTM com os parâmetros corretos e evitar erros de classificação.
+        </p>
+
+        <!-- Input Section -->
+        <div class="space-y-6">
+            <!-- Channel Selector with search -->
+            <div>
+                <label for="channelSelector" class="block text-sm font-medium text-gray-700 mb-1">1. Busque e Selecione o Canal</label>
+                <input 
+                    list="channels" 
+                    id="channelSelector" 
+                    placeholder="Ex: Paid Search Google" 
+                    class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 transition duration-200"
+                >
+                <datalist id="channels">
+                    <!-- Opções de canais preenchidas dinamicamente pelo JS -->
+                    <option value="NM Source"></option>
+                    <option value="Afiliados"></option>
+                    <option value="Cross Selling"></option>
+                    <option value="Consultores"></option>
+                    <option value="Quero Pontos"></option>
+                    <option value="E-mail (Outros)"></option>
+                    <option value="E-mail Transacional"></option>
+                    <option value="E-mail Automação"></option>
+                    <option value="E-mail Conteúdo"></option>
+                    <option value="E-mail Core"></option>
+                    <option value="E-mail Trilha"></option>
+                    <option value="HSM"></option>
+                    <option value="SMS"></option>
+                    <option value="Communities"></option>
+                    <option value="Organic Social (Others)"></option>
+                    <option value="Facebook Organic Social"></option>
+                    <option value="Instagram Organic Social"></option>
+                    <option value="Twitter Organic Social"></option>
+                    <option value="TikTok Organic Social"></option>
+                    <option value="Youtube Organic Social"></option>
+                    <option value="Linkedin Organic Social"></option>
+                    <option value="Influencers"></option>
+                    <option value="UGC Organic Social"></option>
+                    <option value="Organic Search (Others)"></option>
+                    <option value="Organic Search Google"></option>
+                    <option value="Direct"></option>
+                    <option value="PR"></option>
+                    <option value="Paid (Others)"></option>
+                    <option value="Paid Social Meta"></option>
+                    <option value="Paid Social TikTok"></option>
+                    <option value="Paid Social Youtube"></option>
+                    <option value="Paid Social LinkedIn"></option>
+                    <option value="Programatic"></option>
+                    <option value="Bing Ads"></option>
+                    <option value="Paid Search Google"></option>
+                    <option value="Paid Search Google Content"></option>
+                    <option value="Paid Search Google Branded"></option>
+                    <option value="Paid Search Google Branding"></option>
+                    <option value="Paid Search Google Qualified"></option>
+                    <option value="Referral"></option>
+                    <option value="Referral LP"></option>
+                    <option value="Referral Nota Quero"></option>
+                    <option value="Referral Checkout e Admissão"></option>
+                    <option value="Referral Pop Ups"></option>
+                    <option value="Referral Others"></option>
+                </datalist>
+            </div>
+            
+            <div id="channelRulesInfo" class="mt-4 p-4 text-sm text-gray-700 bg-blue-50 border border-blue-200 rounded-lg hidden">
+                <span class="font-bold">Regras para este canal:</span> <span id="rulesDescription"></span>
+            </div>
+
+            <!-- URL Input -->
+            <div>
+                <label for="urlInput" class="block text-sm font-medium text-gray-700 mb-1">2. URL de Destino</label>
+                <input 
+                    type="url" 
+                    id="urlInput" 
+                    placeholder="Ex: https://www.querobolsa.com.br" 
+                    class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+                    required
+                >
+            </div>
+
+            <!-- Dynamic UTM Source & Medium Inputs -->
+            <div class="grid sm:grid-cols-2 gap-6 mt-6 p-4 border border-gray-200 rounded-lg bg-gray-50">
+                <!-- UTM Source -->
+                <div class="input-group">
+                    <label for="utm_source" class="block text-sm font-medium text-gray-700 mb-1">UTM Source</label>
+                    <input type="text" id="utm_source" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">
+                </div>
+                <!-- UTM Medium -->
+                <div class="input-group">
+                    <label for="utm_medium" class="block text-sm font-medium text-gray-700 mb-1">UTM Medium</label>
+                    <input type="text" id="utm_medium" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">
+                </div>
+            </div>
+
+            <!-- Global Campaign Inputs -->
+            <div id="globalCampaignInputs" class="grid sm:grid-cols-2 gap-6 p-4 border border-gray-200 rounded-lg bg-gray-50 mt-6">
+                <div class="input-group">
+                    <label for="campaignName" class="block text-sm font-medium text-gray-700 mb-1">Nome da Campanha</label>
+                    <input type="text" id="campaignName" placeholder="Ex: lancamento_produto" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">
+                </div>
+                <div class="input-group">
+                    <label for="adGroupName" class="block text-sm font-medium text-gray-700 mb-1">Grupo de Anúncio</label>
+                    <input type="text" id="adGroupName" placeholder="Ex: publico_jovens" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- Output Section -->
+        <div class="mt-8">
+            <label for="utmLinkOutput" class="block text-sm font-medium text-gray-700 mb-2">Link com UTM Gerado</label>
+            <div class="relative">
+                <textarea 
+                    id="utmLinkOutput" 
+                    rows="4" 
+                    readonly 
+                    class="block w-full p-3 pr-12 border border-gray-300 bg-gray-50 rounded-lg shadow-inner text-gray-800 break-all resize-none focus:outline-none"
+                    placeholder="O link gerado aparecerá aqui..."
+                ></textarea>
+                <button id="copyButton" class="absolute top-2 right-2 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-200" title="Copiar para a área de transferência">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75m1.5 5.625L12 10.5m0 0l3.75 2.25M12 10.5v11.25m-1.5-18h1.5a2.25 2.25 0 012.25 2.25v1.5m-4.5 0h-1.5a2.25 2.25 0 00-2.25 2.25v1.5m18-15v2.25c0 .621-.504 1.125-1.125 1.125H12a.75.75 0 00-.75.75v5.25m-3-2.25h3.75m-3.75 0a.75.75 0 01-.75-.75m.75.75a.75.75 0 00.75.75m0-1.5h3.75m0 0a.75.75 0 00.75-.75m-.75.75a.75.75 0 01.75-.75m-18 1.5H9.75" />
+                    </svg>
+                </button>
+            </div>
+            
+            <div id="copyMessage" class="hidden mt-2 p-2 bg-green-100 text-green-700 rounded-lg text-sm text-center">
+                Link copiado com sucesso!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Define as regras para cada canal
+        const rules = {
+            "NM Source": {
+                source: { type: 'select', values: ["mundovestibular", "guiadacarreira", "ead.com", "saopaulovestibular", "minasvestibular", "bahiavestibular"] },
+                medium: { type: 'text', placeholder: 'Ex: cpc, email, etc.' },
+                description: "A UTM Source deve ser um dos termos definidos. Os demais campos são de preenchimento livre."
+            },
+            "Afiliados": {
+                source: { type: 'text', placeholder: 'Ex: nomedoparceiro' },
+                medium: { type: 'fixed', value: "parceiro" },
+                description: "A UTM Medium deve ser 'parceiro'. A UTM Source é livre (exceto termos de NM Source)."
+            },
+            "Cross Selling": {
+                source: { type: 'text', placeholder: 'Ex: querobolsa' },
+                medium: { type: 'text', placeholder: 'Ex: email, cpc' },
+                description: "A UTM Campaign deve incluir 'cross_' ou 'queroingles2025_fluency'. Os demais campos são de preenchimento livre."
+            },
+            "Consultores": {
+                source: { type: 'text', placeholder: 'Ex: nome-do-consultor' },
+                medium: { type: 'fixed', value: "consultores" },
+                description: "A UTM Medium deve ser 'consultores'. Os demais campos são de preenchimento livre."
+            },
+            "Quero Pontos": {
+                source: { type: 'text', placeholder: 'Ex: querobolsa' },
+                medium: { type: 'fixed', value: "mgm" },
+                description: "A UTM Medium deve ser 'mgm'. Os demais campos são de preenchimento livre."
+            },
+            "E-mail (Outros)": {
+                source: { type: 'select', values: ["querobolsa", "rdstation", "sendgrid", "email"] },
+                medium: { type: 'select', values: ["email", "cta"] },
+                description: "UTM Source e Medium devem seguir as regras de e-mail."
+            },
+            "E-mail Transacional": {
+                source: { type: 'select', values: ["querobolsa", "rdstation", "sendgrid", "email"] },
+                medium: { type: 'select', values: ["email", "cta"] },
+                description: "UTM Source e Medium devem seguir as regras de e-mail. A UTM Campaign deve ser um dos termos definidos."
+            },
+            "E-mail Automação": {
+                source: { type: 'select', values: ["querobolsa", "rdstation", "sendgrid", "email"] },
+                medium: { type: 'select', values: ["email", "cta"] },
+                description: "UTM Source e Medium devem seguir as regras de e-mail. A UTM Campaign deve ser um dos termos definidos."
+            },
+            "E-mail Conteúdo": {
+                source: { type: 'select', values: ["querobolsa", "rdstation", "sendgrid", "email"] },
+                medium: { type: 'select', values: ["email", "cta"] },
+                description: "UTM Source e Medium devem seguir as regras de e-mail. A UTM Campaign deve ser um dos termos definidos."
+            },
+            "E-mail Core": {
+                source: { type: 'select', values: ["querobolsa", "rdstation", "sendgrid", "email"] },
+                medium: { type: 'select', values: ["email", "cta"] },
+                description: "UTM Source e Medium devem seguir as regras de e-mail. A UTM Campaign deve ser um dos termos definidos."
+            },
+            "E-mail Trilha": {
+                source: { type: 'select', values: ["querobolsa", "rdstation", "sendgrid", "email"] },
+                medium: { type: 'select', values: ["email", "cta"] },
+                description: "UTM Source e Medium devem seguir as regras de e-mail. A UTM Campaign deve ser um dos termos definidos."
+            },
+            "HSM": {
+                source: { type: 'select', values: ["querobolsa", "melhorescola"] },
+                medium: { type: 'fixed', value: "whatsapp" },
+                description: "UTM Source e UTM Medium são fixos. A UTM Campaign deve ser 'hsm'."
+            },
+            "SMS": {
+                source: { type: 'text', placeholder: 'Ex: querobolsa' },
+                medium: { type: 'fixed', value: "sms" },
+                description: "A UTM Medium deve ser 'sms'. Os demais campos são de preenchimento livre."
+            },
+            "Communities": {
+                source: { type: 'fixed', value: "querobolsa" },
+                medium: { type: 'fixed', value: "whatsapp" },
+                description: "A UTM Source e a UTM Medium são fixas. A UTM Campaign deve começar com 'comunidade_'."
+            },
+            "Organic Social (Others)": {
+                source: { type: 'text', placeholder: 'Ex: facebook, instagram' },
+                medium: { type: 'select', values: ["social", "referral", "influencer", "organic", "youtube"] },
+                description: "A UTM Medium deve ser um dos termos definidos. Os demais campos são de preenchimento livre."
+            },
+            "Facebook Organic Social": {
+                source: { type: 'fixed', value: "facebook" },
+                medium: { type: 'select', values: ["social", "referral", "influencer", "organic", "youtube"] },
+                description: "A UTM Source deve ser 'facebook'. A UTM Medium deve seguir a regra de Organic Social."
+            },
+            "Instagram Organic Social": {
+                source: { type: 'select', values: ["instagram", "linktr.ee", "linktre"] },
+                medium: { type: 'select', values: ["social", "referral", "influencer", "organic", "youtube"] },
+                description: "A UTM Source deve ser 'instagram', 'linktr.ee' ou 'linktre'. A UTM Medium deve seguir a regra de Organic Social."
+            },
+            "Twitter Organic Social": {
+                source: { type: 'fixed', value: "twitter" },
+                medium: { type: 'select', values: ["social", "referral", "influencer", "organic", "youtube"] },
+                description: "A UTM Source deve ser 'twitter'. A UTM Medium deve seguir a regra de Organic Social."
+            },
+            "TikTok Organic Social": {
+                source: { type: 'fixed', value: "tiktok" },
+                medium: { type: 'select', values: ["social", "referral", "influencer", "organic", "youtube"] },
+                description: "A UTM Source deve ser 'tiktok'. A UTM Medium deve seguir a regra de Organic Social."
+            },
+            "Youtube Organic Social": {
+                source: { type: 'fixed', value: "youtube" },
+                medium: { type: 'select', values: ["social", "referral", "influencer", "organic", "youtube"] },
+                description: "A UTM Source deve ser 'youtube'. A UTM Medium deve seguir a regra de Organic Social."
+            },
+            "Linkedin Organic Social": {
+                source: { type: 'fixed', value: "linkedin" },
+                medium: { type: 'select', values: ["social", "referral", "influencer", "organic", "youtube"] },
+                description: "A UTM Source deve ser 'linkedin'. A UTM Medium deve seguir a regra de Organic Social."
+            },
+            "Influencers": {
+                source: { type: 'text', placeholder: 'Ex: nome-do-influencer' },
+                medium: { type: 'select', values: ["social", "referral", "influencer", "organic", "youtube"] },
+                description: "A UTM Medium deve seguir a regra de Organic Social e a UTM Campaign deve começar com 'influencer_'."
+            },
+            "UGC Organic Social": {
+                source: { type: 'text', placeholder: 'Ex: querobolsa' },
+                medium: { type: 'select', values: ["social", "referral", "influencer", "organic", "youtube"] },
+                description: "A UTM Medium deve seguir a regra de Organic Social e a UTM Campaign deve começar com 'ugc_'."
+            },
+            "Organic Search (Others)": {
+                source: { type: 'text', placeholder: 'Ex: bing, yahoo' },
+                medium: { type: 'fixed', value: "organic" },
+                description: "A UTM Medium deve ser 'organic'. Os demais campos são de preenchimento livre."
+            },
+            "Organic Search Google": {
+                source: { type: 'fixed', value: "google" },
+                medium: { type: 'fixed', value: "organic" },
+                description: "A UTM Medium deve ser 'organic' e a UTM Source 'google'."
+            },
+            "Direct": {
+                source: { type: 'text', placeholder: 'Ex: (not set)' },
+                medium: { type: 'fixed', value: "direct" },
+                description: "A UTM Medium deve ser 'direct'. Os demais campos são de preenchimento livre."
+            },
+            "PR": {
+                source: { type: 'select', values: ["imprensa", "evento", "cobranded"] },
+                medium: { type: 'fixed', value: "pr" },
+                description: "A UTM Medium deve ser 'pr' e a UTM Source deve ser 'imprensa', 'evento' ou 'cobranded'."
+            },
+            "Paid (Others)": {
+                source: { type: 'text', placeholder: 'Ex: google, facebook' },
+                medium: { type: 'select', values: ["cpc", "ppc", "paid"] },
+                description: "A UTM Medium deve ser 'cpc', 'ppc' ou 'paid'. Os demais campos são de preenchimento livre."
+            },
+            "Paid Social Meta": {
+                source: { type: 'select', values: ["facebook", "meta", "instagram", "linktr.ee", "linktree"] },
+                medium: { type: 'select', values: ["cpc", "ppc", "paid"] },
+                description: "UTM Source deve ser um dos termos definidos e UTM Medium deve seguir a regra de Paid."
+            },
+            "Paid Social TikTok": {
+                source: { type: 'fixed', value: "tiktok" },
+                medium: { type: 'select', values: ["cpc", "ppc", "paid"] },
+                description: "UTM Source deve ser 'tiktok' e UTM Medium deve seguir a regra de Paid."
+            },
+            "Paid Social Youtube": {
+                source: { type: 'select', values: ["youtubeblast", "google", "youtube"] },
+                medium: { type: 'select', values: ["cpc", "ppc", "paid"] },
+                description: "UTM Source e UTM Medium seguem as regras específicas. A UTM Campaign deve ser um dos termos definidos."
+            },
+            "Paid Social LinkedIn": {
+                source: { type: 'fixed', value: "linkedin" },
+                medium: { type: 'select', values: ["cpc", "ppc", "paid"] },
+                description: "UTM Source deve ser 'linkedin' e UTM Medium deve seguir a regra de Paid."
+            },
+            "Programatic": {
+                source: { type: 'select', values: ["squid", "uol", "twitch", "r7", "g1", "dv360", "globoplay", "samsungtv", "kwai"] },
+                medium: { type: 'select', values: ["cpc", "ppc", "paid"] },
+                description: "UTM Source e UTM Medium devem seguir as regras específicas. Os demais campos são de preenchimento livre."
+            },
+            "Bing Ads": {
+                source: { type: 'fixed', value: "bing" },
+                medium: { type: 'select', values: ["cpc", "ppc", "paid"] },
+                description: "UTM Source deve ser 'bing' e UTM Medium deve seguir a regra de Paid."
+            },
+            "Paid Search Google": {
+                source: { type: 'select', values: ["google", "adwords"] },
+                medium: { type: 'select', values: ["cpc", "ppc", "paid"] },
+                description: "UTM Source e UTM Medium seguem a regra de Paid Search Google. A UTM Campaign será construída a partir do 'Nome da Campanha' e 'Grupo de Anúncio'."
+            },
+            "Paid Search Google Content": {
+                source: { type: 'select', values: ["google", "adwords"] },
+                medium: { type: 'select', values: ["cpc", "ppc", "paid"] },
+                description: "UTM Source e UTM Medium devem seguir a regra de Paid Search Google. A UTM Campaign deve ser um dos termos definidos."
+            },
+            "Paid Search Google Branded": {
+                source: { type: 'select', values: ["google", "adwords"] },
+                medium: { type: 'select', values: ["cpc", "ppc", "paid"] },
+                description: "UTM Source e UTM Medium devem seguir a regra de Paid Search Google. A UTM Campaign deve ser 'institucional'."
+            },
+            "Paid Search Google Branding": {
+                source: { type: 'select', values: ["google", "adwords"] },
+                medium: { type: 'select', values: ["cpc", "ppc", "paid"] },
+                description: "UTM Source e UTM Medium devem seguir a regra de Paid Search Google. A UTM Campaign deve ser um dos termos definidos."
+            },
+            "Paid Search Google Qualified": {
+                source: { type: 'select', values: ["google", "adwords"] },
+                medium: { type: 'select', values: ["cpc", "ppc", "paid"] },
+                description: "UTM Source e UTM Medium devem seguir a regra de Paid Search Google. A UTM Campaign é de preenchimento livre, mas não pode conter termos de Branding."
+            },
+            "Referral": {
+                source: { type: 'text', placeholder: 'Ex: nomedosite' },
+                medium: { type: 'fixed', value: "referral" },
+                description: "A UTM Medium deve ser 'referral'. Os demais campos são de preenchimento livre."
+            },
+            "Referral LP": {
+                source: { type: 'select', values: ["crm.querobolsa.com.br", "www.querohexa.com.br", "querohexa.com.br", "inscricao.querobolsa.com.br", "www.vestibularquero.com.br", "unbounce", "pagamento.querobolsa.com.br"] },
+                medium: { type: 'fixed', value: "referral" },
+                description: "A UTM Medium deve ser 'referral' e a UTM Source um dos termos definidos."
+            },
+            "Referral Nota Quero": {
+                source: { type: 'select', values: ["avaliacao.querobolsa.com.br", "penem.com.br"] },
+                medium: { type: 'fixed', value: "referral" },
+                description: "A UTM Medium deve ser 'referral' e a UTM Source 'avaliacao.querobolsa.com.br' ou 'penem.com.br'."
+            },
+            "Referral Checkout e Admissão": {
+                source: { type: 'select', values: ["checkout.querobolsa.com.br", "admissao.querobolsa.com.br"] },
+                medium: { type: 'fixed', value: "referral" },
+                description: "A UTM Medium deve ser 'referral' e a UTM Source 'checkout.querobolsa.com.br' ou 'admissao.querobolsa.com.br'."
+            },
+            "Referral Pop Ups": {
+                source: { type: 'select', values: ["optinmonster", "wisepops", "querobolsa"] },
+                medium: { type: 'select', values: ["referral", "popup"] },
+                description: "UTM Source e Medium devem seguir as regras específicas."
+            },
+            "Referral Others": {
+                source: { type: 'text', placeholder: 'Ex: nomedosite (sem termos de social)' },
+                medium: { type: 'fixed', value: "referral" },
+                description: "A UTM Medium deve ser 'referral'. A UTM Source é de preenchimento livre, mas não pode ser um dos termos de social."
+            }
+        };
+
+        const channelSelector = document.getElementById('channelSelector');
+        const urlInput = document.getElementById('urlInput');
+        const campaignNameInput = document.getElementById('campaignName');
+        const adGroupNameInput = document.getElementById('adGroupName');
+        const utm_source_input_container = document.querySelector('.input-group:nth-of-type(1)');
+        const utm_medium_input_container = document.querySelector('.input-group:nth-of-type(2)');
+        const utmLinkOutput = document.getElementById('utmLinkOutput');
+        const copyButton = document.getElementById('copyButton');
+        const copyMessage = document.getElementById('copyMessage');
+        const channelRulesInfo = document.getElementById('channelRulesInfo');
+        const rulesDescription = document.getElementById('rulesDescription');
+
+        /**
+         * Clears all dynamic input fields and resets them to a generic text input.
+         */
+        function resetUtmInputs() {
+            utm_source_input_container.innerHTML = `
+                <label for="utm_source" class="block text-sm font-medium text-gray-700 mb-1">UTM Source</label>
+                <input type="text" id="utm_source" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">
+            `;
+            utm_medium_input_container.innerHTML = `
+                <label for="utm_medium" class="block text-sm font-medium text-gray-700 mb-1">UTM Medium</label>
+                <input type="text" id="utm_medium" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">
+            `;
+            // Re-fetch the new input elements after reset
+            const inputs = document.querySelectorAll('#utm_source, #utm_medium');
+            inputs.forEach(input => input.removeEventListener('input', generateUtmLink));
+        }
+
+        /**
+         * Replaces an input field with a select element.
+         * @param {HTMLElement} container The parent container element.
+         * @param {string} id The id of the input/select element.
+         * @param {string} labelText The label text for the field.
+         * @param {string[]} options The list of options for the select element.
+         */
+        function createSelectInput(container, id, labelText, options) {
+            let optionsHtml = options.map(opt => `<option value="${opt}">${opt}</option>`).join('');
+            container.innerHTML = `
+                <label for="${id}" class="block text-sm font-medium text-gray-700 mb-1">${labelText}</label>
+                <select id="${id}" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">
+                    <option value="">-- Selecione --</option>
+                    ${optionsHtml}
+                </select>
+            `;
+            container.querySelector('select').addEventListener('change', generateUtmLink);
+        }
+        
+        /**
+         * Replaces an input field with a fixed, read-only input.
+         * @param {HTMLElement} container The parent container element.
+         * @param {string} id The id of the input element.
+         * @param {string} labelText The label text for the field.
+         * @param {string} value The fixed value to display.
+         */
+        function createFixedInput(container, id, labelText, value) {
+            container.innerHTML = `
+                <label for="${id}" class="block text-sm font-medium text-gray-700 mb-1">${labelText}</label>
+                <input type="text" id="${id}" value="${value}" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm bg-gray-100 cursor-not-allowed focus:outline-none" readonly>
+            `;
+        }
+
+        /**
+         * Creates a text input with a specific placeholder.
+         * @param {HTMLElement} container The parent container element.
+         * @param {string} id The id of the input element.
+         * @param {string} labelText The label text for the field.
+         * @param {string} placeholder The placeholder text.
+         */
+        function createTextInput(container, id, labelText, placeholder) {
+            container.innerHTML = `
+                <label for="${id}" class="block text-sm font-medium text-gray-700 mb-1">${labelText}</label>
+                <input type="text" id="${id}" placeholder="${placeholder}" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">
+            `;
+            container.querySelector('input').addEventListener('input', generateUtmLink);
+        }
+
+        /**
+         * Dynamically configures the UTM inputs based on the selected channel.
+         * @param {string} channel The selected channel name.
+         */
+        function configureUtmInputs(channel) {
+            resetUtmInputs();
+            
+            if (!channel || !rules[channel]) {
+                utmLinkOutput.value = '';
+                channelRulesInfo.classList.add('hidden');
+                return;
+            }
+
+            const channelRules = rules[channel];
+
+            // Display rules description
+            rulesDescription.textContent = channelRules.description;
+            channelRulesInfo.classList.remove('hidden');
+
+            // Source Input
+            if (channelRules.source.type === 'select') {
+                createSelectInput(utm_source_input_container, 'utm_source', 'UTM Source', channelRules.source.values);
+            } else if (channelRules.source.type === 'fixed') {
+                createFixedInput(utm_source_input_container, 'utm_source', 'UTM Source', channelRules.source.value);
+            } else {
+                createTextInput(utm_source_input_container, 'utm_source', 'UTM Source', channelRules.source.placeholder);
+            }
+
+            // Medium Input
+            if (channelRules.medium.type === 'select') {
+                createSelectInput(utm_medium_input_container, 'utm_medium', 'UTM Medium', channelRules.medium.values);
+            } else if (channelRules.medium.type === 'fixed') {
+                createFixedInput(utm_medium_input_container, 'utm_medium', 'UTM Medium', channelRules.medium.value);
+            } else {
+                 createTextInput(utm_medium_input_container, 'utm_medium', 'UTM Medium', channelRules.medium.placeholder);
+            }
+        }
+        
+        /**
+         * Function to build the UTM link based on user inputs.
+         */
+        function generateUtmLink() {
+            const baseUrl = urlInput.value.trim();
+            const utm_source = document.getElementById('utm_source')?.value.trim() || '';
+            const utm_medium = document.getElementById('utm_medium')?.value.trim() || '';
+            
+            // The utm_campaign is now always a compound field
+            const campaignName = campaignNameInput.value.trim();
+            const adGroupName = adGroupNameInput.value.trim();
+            let utm_campaign = '';
+            
+            if (campaignName && adGroupName) {
+                utm_campaign = `${campaignName}_${adGroupName}`;
+            } else if (campaignName) {
+                utm_campaign = campaignName;
+            } else if (adGroupName) {
+                utm_campaign = adGroupName;
+            }
+
+            if (!baseUrl || !(utm_source || utm_medium || utm_campaign)) {
+                utmLinkOutput.value = '';
+                return;
+            }
+
+            const params = {};
+            if (utm_source) params.utm_source = utm_source;
+            if (utm_medium) params.utm_medium = utm_medium;
+            if (utm_campaign) params.utm_campaign = utm_campaign;
+
+            const utmParams = new URLSearchParams(params).toString();
+            if (utmParams) {
+                const separator = baseUrl.includes('?') ? '&' : '?';
+                utmLinkOutput.value = `${baseUrl}${separator}${utmParams}`;
+            } else {
+                utmLinkOutput.value = baseUrl;
+            }
+        }
+
+        /**
+         * Function to copy the generated link to the clipboard.
+         */
+        function copyToClipboard() {
+            if (utmLinkOutput.value) {
+                utmLinkOutput.select();
+                utmLinkOutput.setSelectionRange(0, 99999); // For mobile devices
+
+                try {
+                    document.execCommand('copy');
+                    copyMessage.textContent = 'Link copiado com sucesso!';
+                    copyMessage.classList.remove('hidden');
+                    // Hide message after 3 seconds
+                    setTimeout(() => {
+                        copyMessage.classList.add('hidden');
+                    }, 3000);
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                    copyMessage.textContent = 'Erro ao copiar o link. Por favor, copie manualmente.';
+                    copyMessage.classList.remove('hidden');
+                }
+            }
+        }
+        
+
+        function setupEventListeners() {
+            // Main event listener for the channel search input
+            channelSelector.addEventListener('input', (event) => {
+                const selectedChannel = event.target.value;
+                if (Object.keys(rules).includes(selectedChannel)) {
+                    configureUtmInputs(selectedChannel);
+                } else {
+                    // Reset if the selected value is not a valid channel
+                    resetUtmInputs();
+                    channelRulesInfo.classList.add('hidden');
+                }
+                generateUtmLink();
+            });
+
+            // General listeners for all inputs to trigger link generation
+            urlInput.addEventListener('input', generateUtmLink);
+            campaignNameInput.addEventListener('input', generateUtmLink);
+            adGroupNameInput.addEventListener('input', generateUtmLink);
+            copyButton.addEventListener('click', copyToClipboard);
+
+            // Initial setup on page load
+            configureUtmInputs(channelSelector.value);
+            generateUtmLink();
+        }
+
+        window.addEventListener('DOMContentLoaded', setupEventListeners);
+    </script>
+</body>
+</html>
